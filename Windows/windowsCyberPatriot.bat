@@ -20,12 +20,13 @@ echo "These options are not in order"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "1) PasswordPolicies/Lockout Policies (auto/manual)"
 echo "2) firewall (auto/manual)"
-echo "3) userAccount (Ctrl Alt Del) (manual)"
+echo "3) userAccount (Ctrl Alt Del) (manual/auto)"
 echo "4) Automatic Updates (auto/manual)"
-echo "5) list of command to delete user, change password for user, etc. (manual)"
+echo "5) Change all User password (auto/manual)"
 echo "6) Disabling services"
 echo "7) Enable/Disable remote Desktop"
 echo "8) Disable guest/admin account"
+echo "9) Last Security Check (do it if you don't know what to do)
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo type in the number:
 set /p options=Please choose an option (number): 
@@ -37,6 +38,7 @@ set /p options=Please choose an option (number):
 	if %options% ==6 goto :disablingServices
 	if %options% ==7 goto :remoteDesktop
 	if %options% ==8 goto :disAccounts
+	if %options% ==9 goto :lastOption
 
 pause
 
@@ -51,9 +53,25 @@ pause
 goto:menu
 
 :manageUserCmd
+echo choose y for automatic and choose n for manual process
+set /p managePassword = "Manage Password (y/n): "
+if %managePassword%==y (
 REM list of commands to manage users
-echo look at the list of users (it makes it easier to find admin)
+SETLOCAL 
+echo this is not safe practice
+pause
+set /p newpassword = "Write a new Password: "
+FOR /F "TOKENS=2* delims==" %%G IN ('
+        wmic USERACCOUNT where "status='OK'" get name/value  2^>NUL
+    ') DO for %%g in (%%~G) do (
+            net user %%~g %newpassword%
+          )
+pause
+goto:menu
+) 
+if %managePassword% == n (
 net user
+echo look at the list of users (it makes it easier to find admin)
 echo "I am going to use John Doe as an example "
 echo "To add new user: "
 echo "net user username password /ADD"
@@ -68,6 +86,8 @@ echo "this command will add JohnDoe in group called coolPersonGroup"
 start cmd /wait
 pause
 goto:menu
+)
+
 
 :disAccounts
 REM Admin and Guest disabled
@@ -90,8 +110,6 @@ if %firewallChk%==y (
 	netsh advfirewall firewall set rule name="Remote Assistance (SSDP TCP-In)" new enable=no 
 	netsh advfirewall firewall set rule name="Remote Assistance (SSDP UDP-In)" new enable=no 
 	netsh advfirewall firewall set rule name="Remote Assistance (TCP-In)" new enable=no 
-	netsh advfirewall firewall set rule name="Telnet Server" new enable=no 
-	netsh advfirewall firewall set rule name="netcat" new enable=no
 	echo Set basic firewall rules
 )
 
@@ -107,6 +125,9 @@ goto firewall
 
 :userAccount
 echo please check the user settings (also look at CTRL + ALT + DEL)
+reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v DisableCAD /t REG_DWORD /d 0 /f
+echo To do the opposite of what happned: 
+echo reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v DisableCAD /t REG_DWORD /d 1 /f
 start Control Userpasswords2
 pause
 goto:menu
@@ -162,5 +183,36 @@ goto :menu
 
 :findUselessfiles
 echo all informations will be sent to a file
+goto :menu
+
+:lastOption
+echo please take a picture of your score (some stuff might get deleted)
+pause
+	rem no comments on the commands
+	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AllocateCDRoms /t REG_DWORD /d 1 /f
+	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AllocateFloppies /t REG_DWORD /d 1 /f
+	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /t REG_DWORD /d 0 /f
+	reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers" /v AddPrinterDrivers /t REG_DWORD /d 1 /f
+	reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v ClearPageFileAtShutdown /t REG_DWORD /d 1 /f
+	reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v LimitBlankPasswordUse /t REG_DWORD /d 1 /f
+	reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v auditbaseobjects /t REG_DWORD /d 1 /f
+	reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v fullprivilegeauditing /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v dontdisplaylastusername /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableInstallerDetection /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v PromptOnSecureDesktop /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v undockwithoutlogon /t REG_DWORD /d 0 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\Netlogon\Parameters /v MaximumPasswordAge /t REG_DWORD /d 15 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\Netlogon\Parameters /v DisablePasswordChange /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\Netlogon\Parameters /v RequireStrongKey /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\Netlogon\Parameters /v RequireSignOrSeal /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\Netlogon\Parameters /v SealSecureChannel /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\Netlogon\Parameters /v SignSecureChannel /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters /v autodisconnect /t REG_DWORD /d 45 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v restrictanonymous /t REG_DWORD /d 1 /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v restrictanonymoussam /t REG_DWORD /d 1 /f 
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters /v enablesecuritysignature /t REG_DWORD /d 0 /f 
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters /v requiresecuritysignature /t REG_DWORD /d 0 /f 
+	reg ADD HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters /v NullSessionShares /t REG_MULTI_SZ /d "" /f
+	reg ADD HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v UseMachineId /t REG_DWORD /d 0 /f
 
 goto :menu
