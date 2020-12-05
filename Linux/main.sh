@@ -2,61 +2,11 @@
 
 # hypnogod
 
-menu()
-
-menu() {
-clear
-echo "These options are not in order"
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "1) List of things that needed to be done (checklist)" 
-echo "2) Update linux system (ubuntu/debian)"
-echo "3) Remove bad services (ftp, etc)"
-echo "4) Secure network (enable fire wall, etc)"
-echo "5) Change all password at once"
-echo "6) Find useless files"
-echo "7) Find/remove hacking tools"
-echo "8) Manage ssh (enable or disable)"
-echo "9) Manage PAM files (config)"
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "hello"
-read initialInput
-    if [$initialInput == 1]
-        then 
-            thingsToDO()
-        fi
-    elif [$initialInput == 2]
-        then 
-            update()
-        fi
-    elif [$initialInput == 3]
-        then 
-            removeServices()
-        fi
-    elif [$initialInput == 4]
-        then 
-            secureNetwork()
-        fi
-    elif [$initialInput == 5]
-        then
-            changePasswordForall()
-        fi 
-    elif [$initialInput == 6]
-        then
-            findbadFiles()
-        fi
-    elif [$initialInput == 7]
-        then 
-            findBadTools()
-        fi
-    elif [$initialInput == 8]
-        then 
-            openSSh()
-        fi
-    elif [$initialInput == 9]
-        then 
-            editConfig()
-        fi
-}     
+# funtion is not called in proper way
+# fi will be at the end 
+# if () else {} fi
+#
+  
 
 
 thingsToDO() {
@@ -77,7 +27,6 @@ echo "10) Restart your comp at last (don't forget to take a Picture first)"
 echo 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 read -p "Press any key to continue "
-menu()
 }
 
 update() {
@@ -103,7 +52,6 @@ update() {
     sudo apt-get --purge --reinstall install firefox -y
     wait
     read -p "Press any key to continue "
-    menu()
 }
 
 removeServices() {
@@ -128,7 +76,6 @@ removeServices() {
             sudo service vsftpd restart
         fi
     read -p "Press any key to continue "
-    menu()
 }
 
 secureNetwork() {
@@ -173,7 +120,6 @@ secureNetwork() {
         fi
     echo "Check all services"
     read -p "Press any key to continue "
-    menu()
 }
 # not the best way to write a code
 # you can use one variable if set an smthing like type in 1 to enable firewall
@@ -203,7 +149,6 @@ changePasswordForall() {
             done
         fi
     read -p "Press any key to continue "
-    menu()
 }
 # FR = Future Reference
 #Credit/FR: https://arkit.co.in/3-shell-scripts-change-multiple-users-password/
@@ -215,7 +160,6 @@ findbadFiles() {
         sudo find /home -name *.$commonFile
     done
     read -p "Press any key to continue "
-    menu()
 }
 
 findBadTools() {
@@ -230,7 +174,6 @@ findBadTools() {
             fi
     done
     read -p "Press any key to continue "
-    menu()
 }
 
 openSSh() {
@@ -250,7 +193,6 @@ openSSh() {
             echo "shh has been disabled and purged"
         fi  
     read -p "Press any key to continue "
-    menu()     
 }
 
 
@@ -268,6 +210,61 @@ editConfig() {
     sudo sed -i '1 s/^/password requisite pam_cracklib.so retry=3 minlen=8 difok=3 reject_username minclass=3 maxrepeat=2 dcredit=1 ucredit=1 lcredit=1 ocredit=1\n/' /etc/pam.d/common-password
     
     read -p "Press any key to continue "
-    menu()
 }
 
+
+menu() {
+clear
+echo "These options are not in order"
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "1) List of things that needed to be done (checklist)" 
+echo "2) Update linux system (ubuntu/debian)"
+echo "3) Remove bad services (ftp, etc)"
+echo "4) Secure network (enable fire wall, etc)"
+echo "5) Change all password at once"
+echo "6) Find useless files"
+echo "7) Find/remove hacking tools"
+echo "8) Manage ssh (enable or disable)"
+echo "9) Manage PAM files (config)"
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "hello"
+read initialInput
+    if [$initialInput == 1]
+        then 
+            thingsToDO
+        fi
+    elif [$initialInput == 2]
+        then 
+            update
+        fi
+    elif [$initialInput == 3]
+        then 
+            removeServices
+        fi
+    elif [$initialInput == 4]
+        then 
+            secureNetwork
+        fi
+    elif [$initialInput == 5]
+        then
+            changePasswordForall
+        fi 
+    elif [$initialInput == 6]
+        then
+            findbadFiles
+        fi
+    elif [$initialInput == 7]
+        then 
+            findBadTools
+        fi
+    elif [$initialInput == 8]
+        then 
+            openSSh
+        fi
+    elif [$initialInput == 9]
+        then 
+            editConfig
+        fi
+}  
+
+menu
