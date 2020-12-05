@@ -57,7 +57,7 @@ update() {
 removeServices() {
     echo "Remove FTP service? (y/n)"
 	read ftpService
-    if [ $ftpService =="y" ]
+        if [ $ftpService =="y" ]
             then
                 sudo ufw deny ftp 
                 sudo ufw deny ftps-data 
@@ -81,7 +81,7 @@ removeServices() {
 secureNetwork() {
     echo "do you want to enable firewall (y/n)"
     read eFirewall
-    if [$eFirewall == "y"]
+        if [$eFirewall == "y"]
         then 
             echo "Enable fire wall"
 	        sudo ufw enable
@@ -89,7 +89,7 @@ secureNetwork() {
     read -p "Press any key to continue "
     echo "Do you want to enable syn cookie protection (y/n)"
     read synCookie
-    if [$synCookie == "y"]
+        if [$synCookie == "y"]
         then 
             echo "Enable syn cookie protection"
             sysctl -n net.ipv4.tcp_syncookies
@@ -97,7 +97,7 @@ secureNetwork() {
     read -p "Press any key to continue "
     echo "Do you want to (Potentially harmful) Disable IPv6 (y/n)"
     read "disableIPv6"
-    if [$disableIPv6 == "n"]
+        if [$disableIPv6 == "n"]
         then 
             echo "Disable IPv6"
             echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
@@ -105,7 +105,7 @@ secureNetwork() {
     read -p "Press any key to continue "
     echo "do you want to disable IP Forwarding (y/n)"  
     read disIPforward
-    if [$disIPforward == "y"]
+        if [$disIPforward == "y"]
         then 
             echo "Disable IP Forwarding"
             echo 0 | sudo tee /proc/sys/net/ipv4/ip_forward
@@ -113,7 +113,7 @@ secureNetwork() {
     read -p "Press any key to continue "
     echo "do you want to prevent Prevent IP Spoofing (y/n)"
     read disIPSpoofing
-    if [$disIPSpoofing == "y"]
+        if [$disIPSpoofing == "y"]
         then 
             echo "Prevent IP Spoofing"
             echo "nospoof on" | sudo tee -a /etc/host.conf
@@ -131,7 +131,7 @@ changePasswordForall() {
     echo "type in 'file' if you want to change password for selected few"
     echo "type in your options: "
     read managePasswd
-    if [$managePasswd == "auto"]
+            if [$managePasswd == "auto"]
         then 
             while IFS=: read u x nn rest; do if [ $nn -ge 1000 ]; then echo 'StrongPassw0rd!' | passwd --stdin $u; fi done < /etc/passwd
         fi
@@ -228,42 +228,42 @@ echo "9) Manage PAM files (config)"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "hello"
 read initialInput
-    if [$initialInput == 1]
+        if [$initialInput == 1]
         then 
             thingsToDO
         fi
-        elif [$initialInput == 2]
-            then 
-                update
-            fi
-        elif [$initialInput == 3]
-            then 
-                removeServices
-            fi
-        elif [$initialInput == 4]
-            then 
-                secureNetwork
-            fi
-        elif [$initialInput == 5]
-            then
-                changePasswordForall
-            fi 
-        elif [$initialInput == 6]
-            then
-                findbadFiles
-            fi
-        elif [$initialInput == 7]
-            then 
-                findBadTools
-            fi
-        elif [$initialInput == 8]
-            then 
-                openSSh
-            fi
-        elif [$initialInput == 9]
-            then 
-                editConfig
-            fi
+    elif [$initialInput == 2]
+        then 
+            update
+        fi
+    elif [$initialInput == 3]
+        then 
+            removeServices
+        fi
+    elif [$initialInput == 4]
+        then 
+            secureNetwork
+        fi
+    elif [$initialInput == 5]
+        then
+            changePasswordForall
+        fi 
+    elif [$initialInput == 6]
+        then
+            findbadFiles
+        fi
+    elif [$initialInput == 7]
+        then 
+            findBadTools
+        fi
+    elif [$initialInput == 8]
+        then 
+            openSSh
+        fi
+    elif [$initialInput == 9]
+        then 
+            editConfig
+        fi
 }  
 
 menu
