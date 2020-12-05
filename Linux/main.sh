@@ -58,23 +58,23 @@ removeServices() {
     echo "Remove FTP service? (y/n)"
 	read ftpService
     if [ $ftpService =="y" ]
-		then
-            sudo ufw deny ftp 
-            sudo ufw deny ftps-data 
-            sudo ufw deny ftps
-            sudo ufw deny sftp 
-			sudo apt-get remove pure-ftpd
-            sudo apt-get purge vsftpd -y -qq
-        fi
+            then
+                sudo ufw deny ftp 
+                sudo ufw deny ftps-data 
+                sudo ufw deny ftps
+                sudo ufw deny sftp 
+                sudo apt-get remove pure-ftpd
+                sudo apt-get purge vsftpd -y -qq
+            fi
 
-    elif [$ftpService =="n"]
-        then 
-            sudo ufw allow ftp 
-            sudo ufw allow sftp 
-            sudo ufw allow ftps-data 
-            sudo ufw allow ftps
-            sudo service vsftpd restart
-        fi
+        elif [$ftpService =="n"]
+            then 
+                sudo ufw allow ftp 
+                sudo ufw allow sftp 
+                sudo ufw allow ftps-data 
+                sudo ufw allow ftps
+                sudo service vsftpd restart
+            fi
     read -p "Press any key to continue "
 }
 
@@ -135,19 +135,18 @@ changePasswordForall() {
         then 
             while IFS=: read u x nn rest; do if [ $nn -ge 1000 ]; then echo 'StrongPassw0rd!' | passwd --stdin $u; fi done < /etc/passwd
         fi
-
-    elif [$managePasswd == "file"]
-        then 
-            echo "if there is any error it might be your input of version of linux (please manually hange the script)"
-            echo "Give a list of users (make sure there is space in between each user)"
-            echo "please type in the list: "
-            read userList
-            for i in $userList
-            do 
-                echo $i
-                echo "'Password@123'" | passwd --stdin "$i"
-            done
-        fi
+        elif [$managePasswd == "file"]
+            then 
+                echo "if there is any error it might be your input of version of linux (please manually hange the script)"
+                echo "Give a list of users (make sure there is space in between each user)"
+                echo "please type in the list: "
+                read userList
+                for i in $userList
+                do 
+                    echo $i
+                    echo "'Password@123'" | passwd --stdin "$i"
+                done
+            fi
     read -p "Press any key to continue "
 }
 # FR = Future Reference
@@ -186,12 +185,12 @@ openSSh() {
             sudo sed -i '/^PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
             sudo service ssh restart
         fi
-    elif [$sshOption == "n"]
-        then 
-            sudo apt-get -y purge openssh-server* 
-            sudo ufw deny ssh
-            echo "shh has been disabled and purged"
-        fi  
+        elif [$sshOption == "n"]
+            then 
+                sudo apt-get -y purge openssh-server* 
+                sudo ufw deny ssh
+                echo "shh has been disabled and purged"
+            fi  
     read -p "Press any key to continue "
 }
 
@@ -233,38 +232,38 @@ read initialInput
         then 
             thingsToDO
         fi
-    elif [$initialInput == 2]
-        then 
-            update
-        fi
-    elif [$initialInput == 3]
-        then 
-            removeServices
-        fi
-    elif [$initialInput == 4]
-        then 
-            secureNetwork
-        fi
-    elif [$initialInput == 5]
-        then
-            changePasswordForall
-        fi 
-    elif [$initialInput == 6]
-        then
-            findbadFiles
-        fi
-    elif [$initialInput == 7]
-        then 
-            findBadTools
-        fi
-    elif [$initialInput == 8]
-        then 
-            openSSh
-        fi
-    elif [$initialInput == 9]
-        then 
-            editConfig
-        fi
+        elif [$initialInput == 2]
+            then 
+                update
+            fi
+        elif [$initialInput == 3]
+            then 
+                removeServices
+            fi
+        elif [$initialInput == 4]
+            then 
+                secureNetwork
+            fi
+        elif [$initialInput == 5]
+            then
+                changePasswordForall
+            fi 
+        elif [$initialInput == 6]
+            then
+                findbadFiles
+            fi
+        elif [$initialInput == 7]
+            then 
+                findBadTools
+            fi
+        elif [$initialInput == 8]
+            then 
+                openSSh
+            fi
+        elif [$initialInput == 9]
+            then 
+                editConfig
+            fi
 }  
 
 menu
