@@ -2,12 +2,8 @@
 
 # hypnogod
 
-# funtion is not called in proper way
-# fi will be at the end
-# if () else {} fi
-#
-
 thingsToDO() {
+    clear
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo "things to DO: "
     echo "1) Do the forensic"
@@ -28,6 +24,7 @@ thingsToDO() {
 }
 
 update() {
+    clear
     echo "start updates"
     echo "You might Lose points for SSH (while update is going on)"
     read -p "Press any key to continue "
@@ -53,6 +50,7 @@ update() {
 }
 
 removeServices() {
+    clear
     echo "Remove FTP service? (y/n)"
     read ftpService
     if [ "$ftpService" == "y" ]; then
@@ -73,6 +71,7 @@ removeServices() {
 }
 
 secureNetwork() {
+    clear
     echo "do you want to enable firewall (y/n)"
     read eFirewall
     if [ "$eFirewall" == "y" ]; then
@@ -114,6 +113,7 @@ secureNetwork() {
 # you can use one variable if set an smthing like type in 1 to enable firewall
 
 changePasswordForall() {
+    clear
     echo "changing everyones password like this is not safe method"
     read -p "Press any key to continue "
     echo "type in 'auto' if you want it do automatically change password for all users"
@@ -138,6 +138,7 @@ changePasswordForall() {
 #Credit/FR: https://arkit.co.in/3-shell-scripts-change-multiple-users-password/
 
 findbadFiles() {
+    clear
     echo "find common files"
     for commonFile in mp3 mp4 wav m4a mov wnv wpl gif jpg png img jpeg webvm; do
         sudo find /home -name *.$commonFile
@@ -146,6 +147,7 @@ findbadFiles() {
 }
 
 findBadTools() {
+    clear
     echo "Find Hacking tools"
     for commanHackingtools in hydra john nikto netcat nmap burp wireshark kismet sqlmap zenmap metasploit ettercap hashcat; do
         echo "do you want to remove: $commanHackingtools ? (y/n)"
@@ -158,6 +160,7 @@ findBadTools() {
 }
 
 openSSh() {
+    clear
     echo -n "OpenSSH Server [y/n] "
     read sshOption
     if [ "$sshOption" == "y" ]; then
@@ -174,6 +177,7 @@ openSSh() {
 }
 
 editConfig() {
+    clear
     echo "allow-guest=false" >>/etc/lightdm/lightdm.conf
     wait
     sudo sed -i '/^PASS_MAX_DAYS/ c\PASS_MAX_DAYS   90' /etc/login.defs
