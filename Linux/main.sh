@@ -122,10 +122,12 @@ changePasswordForall() {
     echo "type in your options: "
     read managePasswd
     if [ "$managePasswd" == "auto" ]; then
-        while IFS=: read u x nn rest; do if [ $nn -ge 1000 ]; then echo 'StrongPassw0rd!' | passwd --stdin $u; fi; done </etc/passwd
+        echo "auto is currently down"
+        #while IFS=: read u x nn rest; do if [ $nn -ge 1000 ]; then echo 'StrongPassw0rd!' | passwd --stdin $u; fi; done </etc/passwd
     elif [ "$managePasswd" == "file" ]; then
         echo "if there is any error it might be your input of version of linux (please manually hange the script)"
         echo "Give a list of users (make sure there is space in between each user)"
+        echo " if there is an error run: [sudo mount -o remount,rw / ] "
         echo "please type in the list: "
         read userList
         for i in $userList; do
