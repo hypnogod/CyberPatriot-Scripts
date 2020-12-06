@@ -55,14 +55,14 @@ update() {
 removeServices() {
     echo "Remove FTP service? (y/n)"
     read ftpService
-    if [ $ftpService =="y" ]; then
+    if [ "$ftpService" == "y" ]; then
         sudo ufw deny ftp
         sudo ufw deny ftps-data
         sudo ufw deny ftps
         sudo ufw deny sftp
         sudo apt-get remove pure-ftpd
         sudo apt-get purge vsftpd -y -qq
-    elif [ $ftpService =="n" ]; then
+    elif [ "$ftpService" == "n" ]; then
         sudo ufw allow ftp
         sudo ufw allow sftp
         sudo ufw allow ftps-data
@@ -75,35 +75,35 @@ removeServices() {
 secureNetwork() {
     echo "do you want to enable firewall (y/n)"
     read eFirewall
-    if [$eFirewall == "y"]; then
+    if [ "$eFirewall" == "y" ]; then
         echo "Enable fire wall"
         sudo ufw enable
     fi
     read -p "Press any key to continue "
     echo "Do you want to enable syn cookie protection (y/n)"
     read synCookie
-    if [$synCookie == "y"]; then
+    if [ "$synCookie" == "y" ]; then
         echo "Enable syn cookie protection"
         sysctl -n net.ipv4.tcp_syncookies
     fi
     read -p "Press any key to continue "
     echo "Do you want to (Potentially harmful) Disable IPv6 (y/n)"
-    read "disableIPv6"
-    if [$disableIPv6 == "n"]; then
+    read disableIPv6
+    if [ "$disableIPv6" == "n" ]; then
         echo "Disable IPv6"
         echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
     fi
     read -p "Press any key to continue "
     echo "do you want to disable IP Forwarding (y/n)"
     read disIPforward
-    if [$disIPforward == "y"]; then
+    if [ "$disIPforward" == "y" ]; then
         echo "Disable IP Forwarding"
         echo 0 | sudo tee /proc/sys/net/ipv4/ip_forward
     fi
     read -p "Press any key to continue "
     echo "do you want to prevent Prevent IP Spoofing (y/n)"
     read disIPSpoofing
-    if [$disIPSpoofing == "y"]; then
+    if [ "$disIPSpoofing" == "y" ]; then
         echo "Prevent IP Spoofing"
         echo "nospoof on" | sudo tee -a /etc/host.conf
     fi
@@ -120,9 +120,9 @@ changePasswordForall() {
     echo "type in 'file' if you want to change password for selected few"
     echo "type in your options: "
     read managePasswd
-    if [$managePasswd == "auto"]; then
+    if [ "$managePasswd" == "auto" ]; then
         while IFS=: read u x nn rest; do if [ $nn -ge 1000 ]; then echo 'StrongPassw0rd!' | passwd --stdin $u; fi; done </etc/passwd
-    elif [$managePasswd == "file"]; then
+    elif [ "$managePasswd" == "file" ]; then
         echo "if there is any error it might be your input of version of linux (please manually hange the script)"
         echo "Give a list of users (make sure there is space in between each user)"
         echo "please type in the list: "
@@ -150,7 +150,7 @@ findBadTools() {
     for commanHackingtools in hydra john nikto netcat nmap burp wireshark kismet sqlmap zenmap metasploit ettercap hashcat; do
         echo "do you want to remove: $commanHackingtools ? (y/n)"
         read hackinginput
-        if [$hackinginput == "y"]; then
+        if [ "$hackinginput" == "y" ]; then
             sudo apt-get -y purge $commanHackingtools*
         fi
     done
@@ -160,12 +160,12 @@ findBadTools() {
 openSSh() {
     echo -n "OpenSSH Server [y/n] "
     read sshOption
-    if [$sshOption == "y"]; then
+    if [ "$sshOption" == "y" ]; then
         sudo apt-get -y install openssh-server
         sudo ufw allow ssh
         sudo sed -i '/^PermitRootLogin/ c\PermitRootLogin no' /etc/ssh/sshd_config
         sudo service ssh restart
-    elif [$sshOption == "n"]; then
+    elif [ "$sshOption" == "n" ]; then
         sudo apt-get -y purge openssh-server*
         sudo ufw deny ssh
         echo "shh has been disabled and purged"
@@ -202,27 +202,36 @@ menu() {
     echo "8) Manage ssh (enable or disable)"
     echo "9) Manage PAM files (config)"
     echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo "hello"
+    echo "Please choose an option (number): "
     read initialInput
-    if [$initialInput == 1]; then
+    if [ "$initialInput" == "1" ]; then
         thingsToDO
-    elif [$initialInput == 2]; then
+    elif [ "$initialInput" == "2" ]; then
         update
-    elif [$initialInput == 3]; then
+    elif [ "$initialInput" == "3" ]; then
         removeServices
-    elif [$initialInput == 4]; then
+    elif [ "$initialInput" == "4" ]; then
         secureNetwork
-    elif [$initialInput == 5]; then
+    elif [ "$initialInput" == "5" ]; then
         changePasswordForall
-    elif [$initialInput == 6]; then
+    elif [ "$initialInput" == "6" ]; then
         findbadFiles
-    elif [$initialInput == 7]; then
+    elif [ "$initialInput" == "7" ]; then
         findBadTools
-    elif [$initialInput == 8]; then
+    elif [ "$initialInput" == "8" ]; then
         openSSh
-    elif [$initialInput == 9]; then
+    elif [ "$initialInput" == "9" ]; then
         editConfig
     fi
 }
 
 menu
+# thingsToDO
+# update
+# removeServices
+# secureNetwork
+# changePasswordForall
+# findbadFiles
+# findBadTools
+# openSSh
+# editConfig
