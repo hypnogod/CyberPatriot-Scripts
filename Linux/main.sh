@@ -115,6 +115,7 @@ secureNetwork() {
 changePasswordForall() {
     clear
     echo "changing everyones password like this is not safe method"
+    echo "You must be a root user to run this code"
     read -p "Press any key to continue "
     echo "type in 'auto' if you want it do automatically change password for all users"
     echo "type in 'file' if you want to change password for selected few"
@@ -129,7 +130,8 @@ changePasswordForall() {
         read userList
         for i in $userList; do
             echo $i
-            echo "'Password@123'" | passwd --stdin "$i"
+            echo "$i:StrongPassw0rd!" | chpasswd
+
         done
     fi
     read -p "Press any key to continue "
