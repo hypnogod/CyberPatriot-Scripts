@@ -22,7 +22,7 @@ echo "1) PasswordPolicies/Lockout Policies (auto/manual)"
 echo "2) firewall (auto/manual)"
 echo "3) userAccount (Ctrl Alt Del) (manual/auto)"
 echo "4) Automatic Updates (auto/manual)"
-echo "5) Change all User password (auto/manual)"
+echo "5) Change all User password (auto)"
 echo "6) Disabling services"
 echo "7) Enable/Disable remote Desktop"
 echo "8) Disable guest/admin account"
@@ -43,50 +43,48 @@ set /p options=Please choose an option (number):
 pause
 
 :PasswordPolicies
-echo changing password PasswordPolicies. Make sure to check Account Lockout Policies
+echo changing password PasswordPolicies.
 REM minimum password length: 8, maximum password age: 30, Password history: 5, minimum password age: 10 
 REM Account lockout threshold: 5, Account lockout duration: 30, Reset account lockout counter after: 30
 net accounts /MINPWLEN:8 /MAXPWAGE:30 /UNIQUEPW:5 /MINPWAGE:10 /lockoutthreshold:5 /lockoutduration:30 /lockoutwindow:30
 echo starting secpol.msc for manual process
 start secpol.msc
+echo please double check it
 pause
 goto:menu
 
 :manageUserCmd
-echo choose y for automatic and choose n for manual process
-set /p managePassword = "Manage Password (y/n): "
-if %managePassword%==y (
 REM list of commands to manage users
 SETLOCAL 
 echo this is not safe practice
 pause
-set /p newpassword = "Write a new Password: "
+echo password will be: CyberPatriot2020!
 FOR /F "TOKENS=2* delims==" %%G IN ('
         wmic USERACCOUNT where "status='OK'" get name/value  2^>NUL
     ') DO for %%g in (%%~G) do (
-            net user %%~g %newpassword%
+		    echo %%~g
+            net user %%~g CyberPatriot2020!
           )
+echo password will be: CyberPatriot2020!
 pause
 goto:menu
-) 
-if %managePassword% == n (
-net user
-echo look at the list of users (it makes it easier to find admin)
-echo "I am going to use John Doe as an example "
-echo "To add new user: "
-echo "net user username password /ADD"
-echo "For example, net user JohnDoe thisisJohnDoePassword777 /ADD "
-echo "To change Password (Asterisk included): " 
-echo "net user JohnDoe * "
-echo "how to give admin prievelege to a user: "
-echo "net localgroup administrators JohnDoe /add "
-echo "If you want to add a user to a group: "
-echo "net localgroup coolPersonGroup JohnDoe /add"
-echo "this command will add JohnDoe in group called coolPersonGroup"
-start cmd /wait
-pause
-goto:menu
-)
+
+@REM net user
+@REM echo look at the list of users (it makes it easier to find admin)
+@REM echo "I am going to use John Doe as an example "
+@REM echo "To add new user: "
+@REM echo "net user username password /ADD"
+@REM echo "For example, net user JohnDoe thisisJohnDoePassword777 /ADD "
+@REM echo "To change Password (Asterisk included): " 
+@REM echo "net user JohnDoe * "
+@REM echo "how to give admin prievelege to a user: "
+@REM echo "net localgroup administrators JohnDoe /add "
+@REM echo "If you want to add a user to a group: "
+@REM echo "net localgroup coolPersonGroup JohnDoe /add"
+@REM echo "this command will add JohnDoe in group called coolPersonGroup"
+@REM start cmd /wait
+@REM pause
+@REM goto:menu
 
 
 :disAccounts
@@ -94,6 +92,7 @@ REM Admin and Guest disabled
 echo turn off admin and guest
 net user administrator /active:no
 net user guest /active:no
+pause
 goto:menu
 
 :firewall
@@ -111,6 +110,8 @@ if %firewallChk%==y (
 	netsh advfirewall firewall set rule name="Remote Assistance (SSDP UDP-In)" new enable=no 
 	netsh advfirewall firewall set rule name="Remote Assistance (TCP-In)" new enable=no 
 	echo Set basic firewall rules
+	pause
+	goto:menu
 )
 
 if %firewallChk%==n (
@@ -224,4 +225,5 @@ pause
 	reg ADD "HKCU\Software\Microsoft\Internet Explorer\Download" /v RunInvalidSignatures /t REG_DWORD /d 1 /f
 	reg ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v WarnonBadCertRecving /t REG_DWORD /d 1 /f
 	reg ADD "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v WarnOnPostRedirect /t REG_DWORD /d 1 /f
+pause
 goto :menu
