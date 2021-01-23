@@ -27,6 +27,8 @@ echo "6) Disabling services"
 echo "7) Enable/Disable remote Desktop"
 echo "8) Disable guest/admin account"
 echo "9) Last Security Check (do it if you don't know what to do)"
+echo "10) Audit policy"
+echo "11) Things todo"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo type in the number:
 set /p options=Please choose an option (number): 
@@ -39,6 +41,8 @@ set /p options=Please choose an option (number):
 	if %options% ==7 goto :remoteDesktop
 	if %options% ==8 goto :disAccounts
 	if %options% ==9 goto :lastOption
+	if %options% ==10 goto :auditPolicy
+	if %options% ==11 goto :thingsToDO
 
 pause
 
@@ -49,7 +53,7 @@ REM Account lockout threshold: 5, Account lockout duration: 30, Reset account lo
 net accounts /MINPWLEN:8 /MAXPWAGE:30 /UNIQUEPW:5 /MINPWAGE:10 /lockoutthreshold:5 /lockoutduration:30 /lockoutwindow:30
 echo starting secpol.msc for manual process
 start secpol.msc
-echo please double check it
+echo please double check it (there is an error)
 pause
 goto:menu
 
@@ -58,14 +62,13 @@ REM list of commands to manage users
 SETLOCAL 
 echo this is not safe practice
 pause
-echo password will be: CyberPatriot2020!
 FOR /F "TOKENS=2* delims==" %%G IN ('
         wmic USERACCOUNT where "status='OK'" get name/value  2^>NUL
     ') DO for %%g in (%%~G) do (
 		    echo %%~g
-            net user %%~g CyberPatriot2020!
+            net user %%~g CyberPatriot2021!
           )
-echo password will be: CyberPatriot2020!
+echo password will be: CyberPatriot2021!
 pause
 goto:menu
 
@@ -136,8 +139,15 @@ goto:menu
 
 :autoUpdate
 echo automatic Update
-reg add "HKLM\SOFTWARE\Microsoft\WINDOWS\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions /t REG_DWORD /d 4 /f
-start ms-settings:windowsupdate /wait
+reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU /v AutoInstallMinorUpdates /t REG_DWORD /d 1 /f
+reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU /v NoAutoUpdate /t REG_DWORD /d 0 /f
+reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU /v AUOptions /t REG_DWORD /d 4 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions /t REG_DWORD /d 4 /f
+reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate /v DisableWindowsUpdateAccess /t REG_DWORD /d 0 /f
+reg add HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate /v ElevateNonAdmins /t REG_DWORD /d 0 /f
+reg add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer /v NoWindowsUpdate /t REG_DWORD /d 0 /f
+reg add "HKLM\SYSTEM\Internet Communication Management\Internet Communication" /v DisableWindowsUpdateAccess /t REG_DWORD /d 0 /f
+reg add HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\WindowsUpdate /v DisableWindowsUpdateAccess /t REG_DWORD /d 0 /fstart ms-settings:windowsupdate /wait
 pause
 goto:menu
 
@@ -174,9 +184,14 @@ goto remoteDesktop
 echo Disabling Services (Note: some of the services might be needed later on)
 set servicesList= TapiSrv TlntSvr ftpsvc msftpsvc SNMP TermService SessionEnv UmRdpService SharedAccess remoteRegistry SSDPSRV W3SVC SNMPTRAP remoteAccess RpcSs HomeGroupProvider HomeGroupListener 
 for %%i in (%servicesList%) do (
-	echo disabled Service: %%i
-	sc stop "%%i"
-	sc config "%%i" start= disabled
+
+	set /p serveChk= "do you want to delete %%i ? (y/n): "
+	if %serveChk%==y (
+		echo disabled Service: %%i
+		sc stop "%%i"
+		sc config "%%i" start= disabled
+	)
+
 )
 echo check everything manually
 start services.msc /wait
@@ -187,11 +202,56 @@ goto :menu
 echo all informations will be sent to a file
 goto :menu
 
+:auditPolicy
+echo Start Windows Auditing?
+pause
+	start eventvwr.msc /wait
+	echo "Event Viewer"
+	echo "This will change almost everything in Audit policy settings to Sucess and faliure"
+	pause
+    auditpol /set /category:"Account Logon" /success:enable /failure:enable
+    auditpol /set /category:"Account Management" /success:enable /failure:enable
+    auditpol /set /category:"DS Access" /success:enable /failure:enable
+    auditpol /set /category:"Logon/Logoff" /success:enable /failure:enable
+    auditpol /set /category:"Object Access" /success:enable /failure:enable
+    auditpol /set /category:"Policy Change" /success:enable /failure:enable
+    auditpol /set /category:"Privilege Use" /success:enable /failure:enable
+    auditpol /set /category:"Detailed Tracking" /success:enable /failure:enable
+    auditpol /set /category:"System" /success:enable /failure:enable
+	pause
+pause
+goto :menu
+
+:thingsToDO
+	cls
+	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	echo "Things to do (not in order)"
+	echo "1) Do the forencis"
+	echo "2) Change the password and Account lockout policies"
+	echo "3) Update the windows system"
+	echo "4) Turn on the firewall"
+	echo "5) Look for suspecious files and hacking tools"
+	echo "6) Look at firefox security (settings)"
+	echo "7) Turn on the windows defender and anti-malware"
+	echo "8) Change password for all users"
+	echo "9) Delete unwanted users and add wanted users"
+	echo "10) Change the group as needed"
+	echo "11) Look at people who are administrators"
+	echo "12) Disable guest accounts"
+	echo "13) Follow the CIA triad when managing files (customize the file permissions)"
+	echo "14) Encrypt the documents as needed (might need to install 7-Zip)"
+	echo "15) Check the windows backup Options"
+	echo "16) Look at the event viewer to find weird changes"
+	echo "17) Look at the windows log and customize what are needed to be kept"
+	echo "18) change the Audit policy settings"
+	echo "19) Go to task manager and look at what is running"
+	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+pause
+goto :menu
 
 :lastOption
 echo please take a picture of your score (some stuff might get deleted)
 pause
-	rem no comments on the commands
 	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AllocateCDRoms /t REG_DWORD /d 1 /f
 	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AllocateFloppies /t REG_DWORD /d 1 /f
 	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /t REG_DWORD /d 0 /f
