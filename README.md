@@ -1,1 +1,1 @@
-# CyberPatriot-Scripts
+# Bash Script (Not For Use)
