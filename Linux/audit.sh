@@ -4,8 +4,8 @@ becho() {
     local arg2=${2:-" "}  # Set default value for $2 to " "
     printf "\n"
     if [ "$arg2" = " " ]; then
-        # echo -e "$(tput setaf 1)$1$(tput sgr0)"
-        echo -e "$1"
+        echo -e "$(tput setaf 1)$1$(tput sgr0)"
+        # echo -e "$1"
     else
         echo -n "$(tput setaf 1)$1$(tput sgr0)"
     fi
@@ -109,6 +109,7 @@ awk -F: '($3=="0"){print}' /etc/passwd
 
 becho "Users with .ssh files"
 find /home -type d -name ".ssh"
+find /root -type d -name ".ssh"
 
 becho "Amount of disk space available"
 df -h

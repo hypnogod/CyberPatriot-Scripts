@@ -1,18 +1,17 @@
 #!/bin/bash
-
 becho() {
     local arg2=${2:-" "}  # Set default value for $2 to " "
     printf "\n"
     if [ "$arg2" = " " ]; then
-        # echo -e "$(tput setaf 1)$1$(tput sgr0)"
-        echo -e "$1"
+        echo -e "$(tput setaf 1)$1$(tput sgr0)"
+        # echo -e "$1"
     else
         echo -n "$(tput setaf 1)$1$(tput sgr0)"
     fi
 }
 
 # Backup Dir
-mkdir -p /audit/backup
+`mkdir -p /audit/backup
 chown -R root:root /audit
 chmod -R 600 /audit
 
@@ -107,4 +106,4 @@ mkdir -p /etc/iptables
 
 becho "Save IP table at /etc/iptables/iptables.rules"
 iptables-save | tee /etc/iptables/iptables.rules
-chmod +x /etc/iptables/iptables.rules
+chmod +x /etc/iptables/iptables.rules`
